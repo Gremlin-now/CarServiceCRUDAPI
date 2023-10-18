@@ -3,50 +3,39 @@
 namespace CarServiceCRUDAPI.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/")]
     public class CarController : Controller
     {
-   
-        private static List<Car> cars = new List<Car>();
-
-        [HttpGet("cars/{id}")]
-        public Car get(int id)
+        [HttpGet("client{clientId}/car{carId}")]
+        public Car get(int clientId, int carId)
         {
             try
             {
                 Response.StatusCode = 200;
-                return cars[id];
+                return Storage.Clients[clientId].Cars[carId];
             }
-            catch(Exception ex)
+            catch
             {
-                Console.WriteLine(ex.Message);
                 Response.StatusCode = 404;
                 return new Car("", "", 2001, "aa000a");
             }
         }
-        [HttpGet("cars")]
-        public List<Car> getCars()
-        {
-            return cars;
-        }
-        [HttpPost]
-        [ActionName("addCarInList")]
-        public void post(Car car)
+        [HttpPost("client{clientId}/cars/add")]
+        public void post(int clientId, Car car)
         {
             Response.StatusCode = 204;
             if (ModelState.IsValid)
             {
-                cars.Add(car);
+                Storage.Clients[clientId].Cars.Add(car);
             }
         }
-        [HttpPut]
-        [ActionName("updateCarInList")]
-        public Car put(int id, Car car)
+        [HttpPut("client{clientId}/cars/update/car{carId}")]
+        public Car put(int clientId, int carId, Car car)
         {
             try
             {
                 Response.StatusCode = 200;
-                cars[id] = car;
+                Storage.Clients[clientId].Cars[carId] = car;
             }
             catch
             {
@@ -54,13 +43,12 @@ namespace CarServiceCRUDAPI.Controllers
             }
             return car;
         }
-        [HttpDelete]
-        [ActionName("deleteCarFromList")]
-        public void delete(int id) {
+        [HttpDelete("client{clientId}/cars/delete/car{carId}")]
+        public void delete(int clientId, int carId) {
             try
             {
                 Response.StatusCode = 204;
-                cars.RemoveAt(id);
+                Storage.Clients[clientId].Cars.RemoveAt(carId);
             }
             catch
             {
