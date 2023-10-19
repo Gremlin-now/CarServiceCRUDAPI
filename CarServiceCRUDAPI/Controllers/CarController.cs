@@ -17,16 +17,20 @@ namespace CarServiceCRUDAPI.Controllers
             catch
             {
                 Response.StatusCode = 404;
-                return new Car("", "", 2001, "aa000a");
+                return new Car();
             }
         }
         [HttpPost("client{clientId}/cars/add")]
         public void post(int clientId, Car car)
         {
-            Response.StatusCode = 204;
-            if (ModelState.IsValid)
+            try
             {
+                Response.StatusCode = 204;
                 Storage.Clients[clientId].Cars.Add(car);
+            }
+            catch
+            {
+                Response.StatusCode = 404;
             }
         }
         [HttpPut("client{clientId}/cars/update/car{carId}")]

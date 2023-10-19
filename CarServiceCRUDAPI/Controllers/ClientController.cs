@@ -11,16 +11,18 @@ namespace CarServiceCRUDAPI.Controllers
         {
             try
             {
+                Response.StatusCode = 200;
                 return Storage.Clients[clientId];
-            }catch (Exception ex)
+            }catch
             {
-                Console.WriteLine(ex.ToString());
+                Response.StatusCode = 404;
                 return new Client();
             }
         }
         [HttpPost("clients/add")]
         public void PostClient(Client client)
         {
+            Response.StatusCode = 204;
             Storage.Clients.Add(client);
         }
         [HttpPut("client{clientId}/update")]
@@ -28,10 +30,11 @@ namespace CarServiceCRUDAPI.Controllers
         {
             try
             {
+                Response.StatusCode = 204;
                 Storage.Clients[clientId] = client;
-            }catch (Exception ex)
+            }catch
             {
-                Console.WriteLine(ex);
+                Response.StatusCode = 404;
             }
         }
         [HttpDelete("client{clientId}/delete")]
@@ -39,21 +42,40 @@ namespace CarServiceCRUDAPI.Controllers
         {
             try
             {
+                Response.StatusCode = 204;
                 Storage.Clients.RemoveAt(clientId);
-            }catch (Exception ex)
+            }catch
             {
-                Console.WriteLine(ex);
+                Response.StatusCode = 404;
             }
         }
         [HttpGet("client{clientId}/getAllCars")]
         public List<Car> GetAllCars(int clientId)
         {
-            return Storage.Clients[clientId].Cars;
+            try
+            {
+                Response.StatusCode = 200;
+                return Storage.Clients[clientId].Cars;
+            }
+            catch
+            {
+                Response.StatusCode = 404;
+                return new List<Car>();
+            }
         }
         [HttpGet("client{clientId}/getAllOrders")]
         public List<Order> GetAllOrders(int clientId)
         {
-            return Storage.Clients[clientId].Orders;
+            try
+            {
+                Response.StatusCode = 200;
+                return Storage.Clients[clientId].Orders;
+            }
+            catch
+            {
+                Response.StatusCode = 404;
+                return new List<Order>();
+            }
         }
     }
 }

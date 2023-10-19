@@ -10,26 +10,55 @@ namespace CarServiceCRUDAPI.Controllers
         public Order GetOrder(int clientId, int orderId) {
             try
             {
+                Response.StatusCode = 200;
                 return Storage.Clients[clientId].Orders[orderId];
-            }catch (Exception ex) { 
-                Console.WriteLine(ex.Message);
+            }catch {
+                Response.StatusCode = 404;
                 return new Order();
             }
         }
-        [HttpPost("client{clientId}/orders/add")]
-        public void PostOrder(int clientId, Order order)
+        [HttpPost("client{clientId}/orders/add/car{carId}")]
+        public void PostOrder(int clientId, int carId, string description, string status)
         {
-            Storage.Clients[clientId].Orders.Add(order);
+            try
+            {
+                Response.StatusCode = 204;
+                Storage.Clients[clientId].Orders.Add(new Order
+                {
+                    car = Storage.Clients[clientId].Cars[carId],
+                    Date = DateTime.Now.ToLongDateString(),
+                    Description = description,
+                    Status = status
+                });
+            }catch {
+                Response.StatusCode = 404;
+            }
         }
         [HttpPut("client{clientId}/orders/update/order{orderId}")]
         public void UpdateOrder(int clientId, int orderId, Order order)
         {
-            Storage.Clients[clientId].Orders[orderId] = order;
+            try
+            {
+                Response.StatusCode = 204;
+                Storage.Clients[clientId].Orders[orderId] = order;
+            }
+            catch
+            {
+                Response.StatusCode = 404;
+            }
         }
         [HttpPut("client{clientId}/orders/delete/order{orderId}")]
         public void DeleteOrder(int clientId, int orderId, Order order)
         {
-            Storage.Clients[clientId].Orders.RemoveAt(orderId);
+            try
+            {
+                Response.StatusCode = 204;
+                Storage.Clients[clientId].Orders.RemoveAt(orderId);
+            }
+            catch
+            {
+                Response.StatusCode = 404;
+            }
         }
     }
 }
