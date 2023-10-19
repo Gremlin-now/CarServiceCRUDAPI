@@ -9,10 +9,8 @@ namespace CarServiceCRUDAPI
         [Required]
         public string Surname { get; set; }
         [Required]
-        [RegularExpression("+7 [0-9]{3} [0-9]{3}-[0-9]{2}-[0-9]{2}")]
+        [RegularExpression("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")]
         public string Phone_number { get; set; }
         public string Address { get; set; }
-        public List<Car> Cars = new List<Car>();
-        public List<Order> Orders = new List<Order>();
     }
 }

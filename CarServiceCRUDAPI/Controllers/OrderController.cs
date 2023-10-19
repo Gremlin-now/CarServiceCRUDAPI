@@ -6,58 +6,58 @@ namespace CarServiceCRUDAPI.Controllers
     [Route("api/")]
     public class OrderController : Controller
     {
-        [HttpGet("client{clientId}/order{orderId}")]
+        [HttpGet("order{orderId}")]
         public ActionResult GetOrder(int clientId, int orderId) {
             try
             {
-                return Ok(Storage.Clients[clientId].Orders[orderId]);
+                return Ok(Storage.Orders[orderId]);
             }catch {
                 return BadRequest("Не найден клиент или заказ!");
             }
         }
-        [HttpPost("client{clientId}/orders/add/car{carId}")]
-        public ActionResult PostOrder(int clientId, int carId, string description, string status)
+        [HttpPost("orders/add")]
+        public ActionResult PostOrder(int clientId, int carId, string? description)
         {
             try
             {
-                Response.StatusCode = 204;
-                Storage.Clients[clientId].Orders.Add(new Order
+                Storage.Orders[Storage.LastOrdersKey++] = new Order
                 {
-                    car = Storage.Clients[clientId].Cars[carId],
+                    CarID = carId,
+                    ClientID = clientId,
                     Date = DateTime.Now.ToLongDateString(),
                     Description = description,
                     Status = "Создан"
-                });
+                };
                 return Ok("Заказ успешно создан!");
             }catch {
                 return BadRequest("Не найден клиент или авто!");
             }
         }
-        [HttpPut("client{clientId}/orders/update/order{orderId}")]
-        public ActionResult UpdateOrder(int clientId, int orderId, Order order)
+        [HttpPut("orders/update/order{orderId}")]
+        public ActionResult UpdateOrder(int orderId, Order order)
         {
             try
             {
                 
-                Storage.Clients[clientId].Orders[orderId] = order;
+                Storage.Orders[orderId] = order;
                 return Ok("Успешно обновлен!");
             }
             catch
             {
-                return BadRequest("Не найден клиент или заказ!");
+                return BadRequest("Не найден заказ!");
             }
         }
-        [HttpPut("client{clientId}/orders/delete/order{orderId}")]
-        public ActionResult DeleteOrder(int clientId, int orderId, Order order)
+        [HttpPut("orders/delete/order{orderId}")]
+        public ActionResult DeleteOrder(int orderId, Order order)
         {
             try
             {
-                Storage.Clients[clientId].Orders.RemoveAt(orderId);
-                return Ok("Заказ успешно обновлен!");
+                Storage.Orders.Remove(orderId);
+                return Ok("Заказ успешно удален!");
             }
             catch
             {
-                return BadRequest("Не найден клиент или заказ!");
+                return BadRequest("Не найден заказ!");
             }
         }
     }

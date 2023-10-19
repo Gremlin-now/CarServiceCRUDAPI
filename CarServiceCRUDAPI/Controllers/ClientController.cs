@@ -20,7 +20,7 @@ namespace CarServiceCRUDAPI.Controllers
         [HttpPost("clients/add")]
         public ActionResult PostClient(Client client)
         {
-            Storage.Clients.Add(client);
+            Storage.Clients[Storage.LastClientsKey++] = client;
             return Ok("Клиент успешно добавлен!");
         }
         [HttpPut("client{clientId}/update")]
@@ -30,7 +30,7 @@ namespace CarServiceCRUDAPI.Controllers
             {
 
                 Storage.Clients[clientId] = client;
-                return Ok("Данные о клиенте успешно обновлены!");
+                return Ok(client);
             }catch
             {
                 return BadRequest("Клиент не найден!");
@@ -41,7 +41,7 @@ namespace CarServiceCRUDAPI.Controllers
         {
             try
             {
-                Storage.Clients.RemoveAt(clientId);
+                Storage.Clients.Remove(clientId);
                 return Ok("Данные о клиенте успешно удалены!");
             }
             catch
@@ -54,7 +54,7 @@ namespace CarServiceCRUDAPI.Controllers
         {
             try
             {
-                return Ok(Storage.Clients[clientId].Cars);
+                return Ok(Storage.FindAllCarsForClient(clientId));
             }
             catch
             {
@@ -66,7 +66,7 @@ namespace CarServiceCRUDAPI.Controllers
         {
             try
             {
-                return Ok(Storage.Clients[clientId].Orders);
+                return Ok(Storage.FindAllOrdersForClient(clientId));
             }
             catch
             {
