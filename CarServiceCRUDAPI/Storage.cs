@@ -1,4 +1,6 @@
 ﻿
+using CarServiceCRUDAPI.Models;
+
 namespace CarServiceCRUDAPI
 {
     public static class Storage

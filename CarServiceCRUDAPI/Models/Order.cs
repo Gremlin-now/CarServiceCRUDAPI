@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CarServiceCRUDAPI
+namespace CarServiceCRUDAPI.Models
 {
     public class Order
     {

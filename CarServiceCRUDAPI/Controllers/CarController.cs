@@ -1,13 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarServiceCRUDAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarServiceCRUDAPI.Controllers
 {
     [ApiController]
-    [Route("api/")]
+    [Route("api/cars")]
     public class CarController : Controller
     {
-        [HttpGet("car{carId}")]
-        public ActionResult get(int carId)
+        [HttpGet("{carId}")]
+        public ActionResult Get(int carId)
         {
             try
             {
@@ -18,31 +19,32 @@ namespace CarServiceCRUDAPI.Controllers
                 return BadRequest("Машина не найдена!");
             }
         }
-        [HttpPost("cars/add")]
-        public ActionResult post(Car car)
+        [HttpPost("add")]
+        public ActionResult Post(Car car)
         {
             Storage.Cars[Storage.LastCarsKey++] = car;
-            return Ok("Машина успешно добавлена!");
+            return Ok(car);
         }
-        [HttpPut("cars/update/car{carId}")]
-        public ActionResult put(int carId, Car car)
+        [HttpPut("update/car{carId}")]
+        public ActionResult Put(int carId, Car car)
         {
             try
             {
                 Storage.Cars[carId] = car;
-                return Ok("Данные о машине успешно обновлены");
+                return Ok(car);
             }
             catch
             {
                 return BadRequest("Машина не найдена!");
             }
         }
-        [HttpDelete("cars/delete/car{carId}")]
-        public ActionResult delete(int carId) {
+        [HttpDelete("delete/car{carId}")]
+        public ActionResult Delete(int carId) {
             try
             {
-                Storage.Cars.Remove(carId);
-                return Ok("Данные о машине успешно удалены!");
+                Car? car = null;
+                Storage.Cars.Remove(carId, out car);
+                return Ok(car);
             }
             catch
             {

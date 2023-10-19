@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using CarServiceCRUDAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace CarServiceCRUDAPI.Controllers
 {
     [ApiController]
-    [Route("api/")]
+    [Route("api/orders")]
     public class OrderController : Controller
     {
-        [HttpGet("order{orderId}")]
+        [HttpGet("{orderId}")]
         public ActionResult GetOrder(int clientId, int orderId) {
             try
             {
@@ -15,7 +16,7 @@ namespace CarServiceCRUDAPI.Controllers
                 return BadRequest("Не найден клиент или заказ!");
             }
         }
-        [HttpPost("orders/add")]
+        [HttpPost("add")]
         public ActionResult PostOrder(int clientId, int carId, string? description)
         {
             try
@@ -28,32 +29,33 @@ namespace CarServiceCRUDAPI.Controllers
                     Description = description,
                     Status = "Создан"
                 };
-                return Ok("Заказ успешно создан!");
+                return Ok(Storage.Orders[Storage.LastOrdersKey]);
             }catch {
                 return BadRequest("Не найден клиент или авто!");
             }
         }
-        [HttpPut("orders/update/order{orderId}")]
+        [HttpPut("update/order{orderId}")]
         public ActionResult UpdateOrder(int orderId, Order order)
         {
             try
             {
                 
                 Storage.Orders[orderId] = order;
-                return Ok("Успешно обновлен!");
+                return Ok(order);
             }
             catch
             {
                 return BadRequest("Не найден заказ!");
             }
         }
-        [HttpPut("orders/delete/order{orderId}")]
-        public ActionResult DeleteOrder(int orderId, Order order)
+        [HttpPut("delete/order{orderId}")]
+        public ActionResult DeleteOrder(int orderId)
         {
             try
             {
-                Storage.Orders.Remove(orderId);
-                return Ok("Заказ успешно удален!");
+                Order? order = null;
+                Storage.Orders.Remove(orderId, out order);
+                return Ok(order);
             }
             catch
             {
