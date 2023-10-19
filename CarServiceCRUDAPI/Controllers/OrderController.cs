@@ -7,18 +7,16 @@ namespace CarServiceCRUDAPI.Controllers
     public class OrderController : Controller
     {
         [HttpGet("client{clientId}/order{orderId}")]
-        public Order GetOrder(int clientId, int orderId) {
+        public ActionResult GetOrder(int clientId, int orderId) {
             try
             {
-                Response.StatusCode = 200;
-                return Storage.Clients[clientId].Orders[orderId];
+                return Ok(Storage.Clients[clientId].Orders[orderId]);
             }catch {
-                Response.StatusCode = 404;
-                return new Order();
+                return BadRequest("Не найден клиент или заказ!");
             }
         }
         [HttpPost("client{clientId}/orders/add/car{carId}")]
-        public void PostOrder(int clientId, int carId, string description, string status)
+        public ActionResult PostOrder(int clientId, int carId, string description, string status)
         {
             try
             {
@@ -28,36 +26,38 @@ namespace CarServiceCRUDAPI.Controllers
                     car = Storage.Clients[clientId].Cars[carId],
                     Date = DateTime.Now.ToLongDateString(),
                     Description = description,
-                    Status = status
+                    Status = "Создан"
                 });
+                return Ok("Заказ успешно создан!");
             }catch {
-                Response.StatusCode = 404;
+                return BadRequest("Не найден клиент или авто!");
             }
         }
         [HttpPut("client{clientId}/orders/update/order{orderId}")]
-        public void UpdateOrder(int clientId, int orderId, Order order)
+        public ActionResult UpdateOrder(int clientId, int orderId, Order order)
         {
             try
             {
-                Response.StatusCode = 204;
+                
                 Storage.Clients[clientId].Orders[orderId] = order;
+                return Ok("Успешно обновлен!");
             }
             catch
             {
-                Response.StatusCode = 404;
+                return BadRequest("Не найден клиент или заказ!");
             }
         }
         [HttpPut("client{clientId}/orders/delete/order{orderId}")]
-        public void DeleteOrder(int clientId, int orderId, Order order)
+        public ActionResult DeleteOrder(int clientId, int orderId, Order order)
         {
             try
             {
-                Response.StatusCode = 204;
                 Storage.Clients[clientId].Orders.RemoveAt(orderId);
+                return Ok("Заказ успешно обновлен!");
             }
             catch
             {
-                Response.StatusCode = 404;
+                return BadRequest("Не найден клиент или заказ!");
             }
         }
     }

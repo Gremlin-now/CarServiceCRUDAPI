@@ -7,74 +7,70 @@ namespace CarServiceCRUDAPI.Controllers
     public class ClientController : Controller
     {
         [HttpGet("client{clientId}/getClientInfo")]
-        public Client GetClient(int clientId)
+        public ActionResult GetClient(int clientId)
         {
             try
             {
-                Response.StatusCode = 200;
-                return Storage.Clients[clientId];
+                return Ok(Storage.Clients[clientId]);
             }catch
             {
-                Response.StatusCode = 404;
-                return new Client();
+                return BadRequest("Клиент не найден");
             }
         }
         [HttpPost("clients/add")]
-        public void PostClient(Client client)
+        public ActionResult PostClient(Client client)
         {
-            Response.StatusCode = 204;
             Storage.Clients.Add(client);
+            return Ok("Клиент успешно добавлен!");
         }
         [HttpPut("client{clientId}/update")]
-        public void UpdateClient(int clientId, Client client)
+        public ActionResult UpdateClient(int clientId, Client client)
         {
             try
             {
-                Response.StatusCode = 204;
+
                 Storage.Clients[clientId] = client;
+                return Ok("Данные о клиенте успешно обновлены!");
             }catch
             {
-                Response.StatusCode = 404;
+                return BadRequest("Клиент не найден!");
             }
         }
         [HttpDelete("client{clientId}/delete")]
-        public void DeleteClient(int clientId)
+        public ActionResult DeleteClient(int clientId)
         {
             try
             {
-                Response.StatusCode = 204;
                 Storage.Clients.RemoveAt(clientId);
-            }catch
+                return Ok("Данные о клиенте успешно удалены!");
+            }
+            catch
             {
-                Response.StatusCode = 404;
+                return BadRequest("Клиент не найден!");
             }
         }
         [HttpGet("client{clientId}/getAllCars")]
-        public List<Car> GetAllCars(int clientId)
+        public ActionResult GetAllCars(int clientId)
         {
             try
             {
-                Response.StatusCode = 200;
-                return Storage.Clients[clientId].Cars;
+                return Ok(Storage.Clients[clientId].Cars);
             }
             catch
             {
-                Response.StatusCode = 404;
-                return new List<Car>();
+                return BadRequest("Клиент не найден!");
             }
         }
         [HttpGet("client{clientId}/getAllOrders")]
-        public List<Order> GetAllOrders(int clientId)
+        public ActionResult GetAllOrders(int clientId)
         {
             try
             {
-                Response.StatusCode = 200;
-                return Storage.Clients[clientId].Orders;
+                return Ok(Storage.Clients[clientId].Orders);
             }
             catch
             {
-                Response.StatusCode = 404;
-                return new List<Order>();
+                return BadRequest("Клиент не найден!");
             }
         }
     }

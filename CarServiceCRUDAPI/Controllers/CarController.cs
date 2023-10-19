@@ -7,56 +7,53 @@ namespace CarServiceCRUDAPI.Controllers
     public class CarController : Controller
     {
         [HttpGet("client{clientId}/car{carId}")]
-        public Car get(int clientId, int carId)
+        public ActionResult get(int clientId, int carId)
         {
             try
             {
-                Response.StatusCode = 200;
-                return Storage.Clients[clientId].Cars[carId];
+                return Ok(Storage.Clients[clientId].Cars[carId]);
             }
             catch
             {
-                Response.StatusCode = 404;
-                return new Car();
+                return BadRequest("Клиент или машина не найдены!");
             }
         }
         [HttpPost("client{clientId}/cars/add")]
-        public void post(int clientId, Car car)
+        public ActionResult post(int clientId, Car car)
         {
             try
             {
-                Response.StatusCode = 204;
                 Storage.Clients[clientId].Cars.Add(car);
+                return Ok("Машина успешно добавлена!");
             }
             catch
             {
-                Response.StatusCode = 404;
+                return BadRequest("Клиент не найден!");
             }
         }
         [HttpPut("client{clientId}/cars/update/car{carId}")]
-        public Car put(int clientId, int carId, Car car)
+        public ActionResult put(int clientId, int carId, Car car)
         {
             try
             {
-                Response.StatusCode = 200;
                 Storage.Clients[clientId].Cars[carId] = car;
+                return Ok("Данные о машине успешно обновлены");
             }
             catch
             {
-                Response.StatusCode = 404;
+                return BadRequest("Клиент или машина не найдены!");
             }
-            return car;
         }
         [HttpDelete("client{clientId}/cars/delete/car{carId}")]
-        public void delete(int clientId, int carId) {
+        public ActionResult delete(int clientId, int carId) {
             try
             {
-                Response.StatusCode = 204;
                 Storage.Clients[clientId].Cars.RemoveAt(carId);
+                return Ok("Данные о машине успешно удалены!");
             }
             catch
             {
-                Response.StatusCode = 404;
+                return BadRequest("Клиент или машина не найдены!");
             }
         }
     }
