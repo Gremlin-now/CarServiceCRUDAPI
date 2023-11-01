@@ -1,4 +1,5 @@
 ﻿using CarServiceCRUDAPI.Models;
+using CarServiceCRUDAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarServiceCRUDAPI.Controllers
@@ -7,49 +8,32 @@ namespace CarServiceCRUDAPI.Controllers
     [Route("api/cars")]
     public class CarController : Controller
     {
+
+        IBaseRepository<Car> carRepository;
+
+        public CarController(IBaseRepository<Car> carRepository)
+        {
+            this.carRepository = carRepository;
+        }
+
         [HttpGet("{carId}")]
         public ActionResult Get(int carId)
         {
-            try
-            {
-                return Ok(Storage.Cars[carId]);
-            }
-            catch
-            {
-                return BadRequest("Машина не найдена!");
-            }
+                return Ok(carRepository.Get(carId));
         }
         [HttpPost("add")]
         public ActionResult Post(Car car)
         {
-            Storage.Cars[Storage.LastCarsKey++] = car;
-            return Ok(car);
+            return Ok(carRepository.Create(car));
         }
         [HttpPut("update/car{carId}")]
         public ActionResult Put(int carId, Car car)
         {
-            try
-            {
-                Storage.Cars[carId] = car;
-                return Ok(car);
-            }
-            catch
-            {
-                return BadRequest("Машина не найдена!");
-            }
+            return Ok(carRepository.Update(car, carId));
         }
         [HttpDelete("delete/car{carId}")]
         public ActionResult Delete(int carId) {
-            try
-            {
-                Car? car = null;
-                Storage.Cars.Remove(carId, out car);
-                return Ok(car);
-            }
-            catch
-            {
-                return BadRequest("Машина не найдена!");
-            }
+            return Ok(carRepository.Delete(carId));
         }
     }
 }

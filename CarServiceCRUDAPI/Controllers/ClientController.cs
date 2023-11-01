@@ -1,4 +1,5 @@
 ﻿using CarServiceCRUDAPI.Models;
+using CarServiceCRUDAPI.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarServiceCRUDAPI.Controllers
@@ -7,72 +8,31 @@ namespace CarServiceCRUDAPI.Controllers
     [Route("api/clients")]
     public class ClientController : Controller
     {
+        IBaseRepository<Client> clientRepository;
+
+        public ClientController(IBaseRepository<Client> clientRepository)
+        {
+            this.clientRepository = clientRepository;
+        }
         [HttpGet("{clientId}/getClientInfo")]
         public ActionResult GetClient(int clientId)
         {
-            try
-            {
-                return Ok(Storage.Clients[clientId]);
-            }catch
-            {
-                return BadRequest("Клиент не найден");
-            }
+            return Ok(clientRepository.Get(clientId));
         }
         [HttpPost("add")]
         public ActionResult PostClient(Client client)
         {
-            Storage.Clients[Storage.LastClientsKey++] = client;
-            return Ok(client);
+            return Ok(clientRepository.Create(client));
         }
         [HttpPut("client{clientId}/update")]
         public ActionResult UpdateClient(int clientId, Client client)
         {
-            try
-            {
-                Storage.Clients[clientId] = client;
-                return Ok(client);
-            }catch
-            {
-                return BadRequest("Клиент не найден!");
-            }
+            return Ok(clientRepository.Update(client, clientId));
         }
         [HttpDelete("{clientId}/delete")]
         public ActionResult DeleteClient(int clientId)
         {
-            try
-            {
-                Client? client = null;
-                Storage.Clients.Remove(clientId, out client);
-                return Ok(client);
-            }
-            catch
-            {
-                return BadRequest("Клиент не найден!");
-            }
-        }
-        [HttpGet("{clientId}/getAllCars")]
-        public ActionResult GetAllCars(int clientId)
-        {
-            try
-            {
-                return Ok(Storage.FindAllCarsForClient(clientId));
-            }
-            catch
-            {
-                return BadRequest("Клиент не найден!");
-            }
-        }
-        [HttpGet("{clientId}/getAllOrders")]
-        public ActionResult GetAllOrders(int clientId)
-        {
-            try
-            {
-                return Ok(Storage.FindAllOrdersForClient(clientId));
-            }
-            catch
-            {
-                return BadRequest("Клиент не найден!");
-            }
+            return Ok(clientRepository.Delete(clientId));
         }
     }
 }

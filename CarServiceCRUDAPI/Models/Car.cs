@@ -2,7 +2,7 @@
 
 namespace CarServiceCRUDAPI.Models
 {
-    public class Car
+    public class Car : IModel
     {
         [Required]
         public string Mark { get; set; }
