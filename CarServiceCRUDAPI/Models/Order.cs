@@ -2,7 +2,7 @@
 
 namespace CarServiceCRUDAPI.Models
 {
-    public class Order : IModel
+    public class Order
     {
         [Required]
         public int CarID { get; set; }
